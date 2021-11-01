@@ -44,7 +44,8 @@ class Server(threading.Thread):
         Args: message - the message to send to every connected client.
               sender_address - the address (IP, PORT) of the sender.
         '''
-        #TODO
+        for service_thread in service_threads:
+
 
 
 class ServiceThread(threading.Thread):
@@ -88,7 +89,8 @@ def main():
     server.start()
 
     print('Type \'bye\' at any time to shut down the server...')
-    #TODO
+    thread = Thread(target=handle_bye)
+    thread.start()
 
 if __name__ == '__main__':
     main()

@@ -90,7 +90,13 @@ class Client: # pylint: disable=too-few-public-methods
         print('Type \'bye\' at any time to leave the chat room...')
         self.client_socket.connect((self.host, self.port))
         name = input('Please type your name: ')
-        #TODO
+        
+        sending_thread = SendingThread(self.client_socket, name)
+        sending_thread.start()
+
+        recieving_thread = RecievingThread(self.client_socket, name)
+        recieving_thread.start()
+
         self.client_socket.sendall(f'Server: {name} has joined the room. Say hi!'.encode())
 
 

@@ -44,8 +44,9 @@ class Server(threading.Thread):
         Args: message - the message to send to every connected client.
               sender_address - the address (IP, PORT) of the sender.
         '''
-        for service_thread in service_threads:
-
+        for service_thread in self.service_threads:
+            if service_thread.address is not sender_address:
+                service_thread.conn.send(message.encode())
 
 
 class ServiceThread(threading.Thread):
@@ -66,7 +67,16 @@ class ServiceThread(threading.Thread):
         (ie, no message), the method closes the connected socket and removes ifself (self)
         from the list of service threads of the parent server.
         '''
-        #TODO
+        while True:
+            message = self.conn.recv(1024).decode()
+        
+            if not message:
+                self.conn.close()
+                self.server.service_threads.remove(self)
+                break
+
+            print(message)
+            self.server.broadcast(message, self.address)
 
 def handle_bye(server):
     '''
@@ -89,7 +99,7 @@ def main():
     server.start()
 
     print('Type \'bye\' at any time to shut down the server...')
-    thread = Thread(target=handle_bye)
+    thread = threading.Thread(target=handle_bye(server))
     thread.start()
 
 if __name__ == '__main__':

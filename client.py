@@ -94,8 +94,8 @@ class Client: # pylint: disable=too-few-public-methods
         sending_thread = SendingThread(self.client_socket, name)
         sending_thread.start()
 
-        recieving_thread = RecievingThread(self.client_socket, name)
-        recieving_thread.start()
+        receiving_thread = ReceivingThread(self.client_socket, name)
+        receiving_thread.start()
 
         self.client_socket.sendall(f'Server: {name} has joined the room. Say hi!'.encode())
 
